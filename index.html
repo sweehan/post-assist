@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentPost - Automating Post Creation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hero {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 3em;
+        }
+        .tagline {
+            color: #0073aa;
+            font-size: 1.3em;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .agent-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, #0073aa, #00a0d2);
+        }
+        .agent-card.instagram::before {
+            background: linear-gradient(to right, #E1306C, #F77737);
+        }
+        .agent-card.twitter::before {
+            background: linear-gradient(to right, #1DA1F2, #4AB3F4);
+        }
+        .agent-card.linkedin::before {
+            background: linear-gradient(to right, #0077B5, #00A0DC);
+        }
+        .agent-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            background: #f0f0f0;
+            border-radius: 50%;
+        }
+        .agent-card h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .agent-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+        .status-indicator.inactive {
+            background: #ccc;
+        }
+        .status-indicator.beta {
+            background: #ff9800;
+        }
+        .features {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+        .features h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .feature-item {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-item h3 {
+            color: #0073aa;
+            margin-bottom: 10px;
+        }
+        .coming-soon {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .coming-soon-badge {
+            display: inline-block;
+            background: #666;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>AgentPost</h1>
+            <p class="tagline">Automating post creation using AI for social media networks</p>
+            <p class="subtitle">Transform your ideas into engaging content across all platforms</p>
+            
+            <div class="agent-grid">
+                <a href="apps/blog-agent.html" class="agent-card">
+                    <div class="agent-icon">📝</div>
+                    <h2>Blog Post Agent</h2>
+                    <p>Transform Google Sheets ideas into WordPress blog posts with AI-powered content generation.</p>
+                    <div class="agent-status">
+                        <span class="status-indicator"></span>
+                        <span>Active</span>
+                    </div>
+                </a>
+                
+                <a href="apps/instagram-agent.html" class="agent-card instagram">
+                    <div class="agent-icon">📸</div>
+                    <h2>Instagram Post Agent</h2>
+                    <p>Convert blog content into engaging Instagram posts with optimized captions and hashtags.</p>
+                    <div class="agent-status">
+                        <span class="status-indicator"></span>
+                        <span>Active</span>
+                    </div>
+                </a>
+                
+                <div class="agent-card twitter coming-soon">
+                    <div class="agent-icon">🐦</div>
+                    <h2>Twitter Thread Agent</h2>
+                    <p>Break down long-form content into viral Twitter threads that drive engagement.</p>
+                    <div class="agent-status">
+                        <span class="status-indicator inactive"></span>
+                        <span>Coming Soon</span>
+                    </div>
+                    <span class="coming-soon-badge">In Development</span>
+                </div>
+                
+                <div class="agent-card linkedin coming-soon">
+                    <div class="agent-icon">💼</div>
+                    <h2>LinkedIn Post Agent</h2>
+                    <p>Create professional thought leadership content that builds your business network.</p>
+                    <div class="agent-status">
+                        <span class="status-indicator inactive"></span>
+                        <span>Coming Soon</span>
+                    </div>
+                    <span class="coming-soon-badge">In Development</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>AgentPost Features</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h3>🔐 Secure OAuth</h3>
+                    <p>Google OAuth 2.0 with automatic token refresh</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🤖 AI Integration</h3>
+                    <p>Support for Claude and OpenAI APIs</p>
+                </div>
+                <div class="feature-item">
+                    <h3>📊 Google Sheets</h3>
+                    <p>Direct integration with your spreadsheets</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🔄 Modular Design</h3>
+                    <p>Shared components for easy maintenance</p>
+                </div>
+                <div class="feature-item">
+                    <h3>💾 Local Storage</h3>
+                    <p>Secure credential and post management</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🎨 Custom Prompts</h3>
+                    <p>Tailor AI responses to your brand voice</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2024 AgentPost. Built with modern web technologies.</p>
+            <p><small>Version 2.0 - ES6 Modular Architecture</small></p>
+        </footer>
+    </div>
+    
+    <script type="module">
+        // Check browser compatibility
+        function checkCompatibility() {
+            const features = {
+                'ES6 Modules': 'noModule' in HTMLScriptElement.prototype,
+                'Async/Await': (async () => {})().constructor.name === 'AsyncFunction',
+                'Fetch API': 'fetch' in window,
+                'LocalStorage': 'localStorage' in window
+            };
+            
+            const unsupported = Object.entries(features)
+                .filter(([feature, supported]) => !supported)
+                .map(([feature]) => feature);
+            
+            if (unsupported.length > 0) {
+                console.warn('Missing features:', unsupported);
+            }
+        }
+        
+        checkCompatibility();
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.agent-card, .feature-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

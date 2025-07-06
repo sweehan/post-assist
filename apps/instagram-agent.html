@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentPost - Instagram Agent</title>
+    <!-- Architecture: ES6 Modules v2.0 - DO NOT DOWNGRADE -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            color: #E1306C;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            color: #E1306C;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #E1306C;
+            border-bottom: 2px solid #E1306C;
+            margin-bottom: -2px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background: #E1306C;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #C13584;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .credentials-status {
+            background: #ffe0ec;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffb3d1;
+        }
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .credential-item:last-child {
+            border-bottom: none;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-badge.saved {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.missing {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .log-entry {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .log-entry.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .log-entry.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        small {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        .post-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .post-item h3 {
+            color: #E1306C;
+            margin-bottom: 10px;
+        }
+        .post-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .post-meta a {
+            color: #E1306C;
+            text-decoration: none;
+        }
+        .post-meta a:hover {
+            text-decoration: underline;
+        }
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .auth-button {
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .auth-button:hover {
+            background: #357ae8;
+        }
+        .prompt-editor {
+            background: #ffe0ec;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffb3d1;
+        }
+        .prompt-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .source-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .source-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .caption-preview {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .hashtags {
+            color: #E1306C;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .image-suggestions {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .image-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .image-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #E1306C;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .image-link:hover {
+            background: #C13584;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-nav">
+            <a href="../index.html" class="back-link">
+                <span>←</span> Back to AgentPost
+            </a>
+            <div id="module-status" style="font-size: 12px; color: #666;"></div>
+        </div>
+        
+        <h1>AgentPost - Instagram Agent</h1>
+        <p class="subtitle">Transform your blog content into engaging Instagram captions with AI</p>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="dashboard">Dashboard</button>
+            <button class="tab" data-tab="credentials">Credentials</button>
+            <button class="tab" data-tab="ai-prompts">AI Prompts</button>
+            <button class="tab" data-tab="posts">Generated Captions</button>
+            <button class="tab" data-tab="logs">Activity Logs</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content active">
+            <div class="credentials-status">
+                <h3>System Status</h3>
+                <div class="credential-item">
+                    <span>Google OAuth 2.0</span>
+                    <span class="status-badge missing" id="google-status">Not Connected</span>
+                </div>
+                <div class="credential-item">
+                    <span>AI Provider</span>
+                    <span class="status-badge missing" id="ai-status">Not Configured</span>
+                </div>
+                <div class="credential-item">
+                    <span>Token Expiry</span>
+                    <span class="status-badge" id="token-expiry">--</span>
+                </div>
+            </div>
+
+            <div class="source-selector">
+                <label style="font-weight: bold; margin-bottom: 0;">Content Source:</label>
+                <div class="source-option">
+                    <input type="radio" id="source-blog" name="contentSource" value="blog" checked>
+                    <label for="source-blog" style="margin-bottom: 0;">Blog Tab (Generated Content)</label>
+                </div>
+                <div class="source-option">
+                    <input type="radio" id="source-ideas" name="contentSource" value="ideas">
+                    <label for="source-ideas" style="margin-bottom: 0;">Ideas Tab (Topics)</label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="check-posts-btn">Check for New Content</button>
+                <button id="generate-posts-btn">Generate Captions</button>
+                <button id="write-sheet-btn" style="background: #28a745;">Write to Instagram Tab</button>
+                <button id="test-connections-btn" style="background: #6c757d;">Test Connections</button>
+            </div>
+
+            <div id="status" class="status"></div>
+            <div id="results"></div>
+        </div>
+
+        <!-- Credentials Tab -->
+        <div id="credentials-tab" class="tab-content">
+            <div class="section">
+                <h2>Google Sheets OAuth 2.0</h2>
+                
+                <div class="form-group">
+                    <label for="clientId">OAuth 2.0 Client ID:</label>
+                    <input type="text" id="clientId" placeholder="1234567890-abc123.apps.googleusercontent.com">
+                    <small>Get this from Google Cloud Console > APIs & Services > Credentials</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientSecret">Client Secret (for refresh token):</label>
+                    <input type="password" id="clientSecret" placeholder="GOCSPX-...">
+                    <small>Required for automatic token refresh</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="spreadsheetId">Spreadsheet ID:</label>
+                    <input type="text" id="spreadsheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+                    <small>Find this in your sheet's URL between /d/ and /edit</small>
+                </div>
+                
+                <button id="save-google-btn">Save Settings</button>
+                <button id="auth-google-btn" class="auth-button">
+                    <svg width="18" height="18" viewBox="0 0 48 48">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                    Connect with Google
+                </button>
+                
+                <div id="auth-status" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="section">
+                <h2>AI Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="aiProvider">AI Provider:</label>
+                    <select id="aiProvider">
+                        <option value="claude">Claude API</option>
+                        <option value="openai">OpenAI</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="aiKey">AI API Key:</label>
+                    <input type="password" id="aiKey" placeholder="Your AI API key">
+                </div>
+                
+                <div id="claudeProxyGroup" class="form-group">
+                    <label for="proxyUrl">Cloudflare Worker URL (for Claude):</label>
+                    <input type="url" id="proxyUrl" placeholder="https://your-worker.workers.dev">
+                </div>
+                
+                <button id="save-ai-btn">Save AI Configuration</button>
+            </div>
+
+            <div class="section">
+                <h2>Content Settings</h2>
+                
+                <div class="form-group">
+                    <label for="defaultHashtags">Default Hashtags:</label>
+                    <textarea id="defaultHashtags" rows="3" placeholder="#instagram #socialmedia #contentcreator">#instagram #socialmedia #contentcreator #digitalmarketing</textarea>
+                    <small>These will be added to all captions</small>
+                </div>
+                
+                <button id="save-content-btn">Save Content Settings</button>
+            </div>
+        </div>
+
+        <!-- AI Prompts Tab -->
+        <div id="ai-prompts-tab" class="tab-content">
+            <div class="prompt-editor">
+                <h2>Customize AI Prompts</h2>
+                <p>Edit these prompts to control how the AI generates your Instagram captions</p>
+                
+                <div class="form-group">
+                    <label for="systemPrompt">System Prompt (Sets AI personality):</label>
+                    <textarea id="systemPrompt" rows="6"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mainPrompt">Caption Generation Prompt:</label>
+                    <textarea id="mainPrompt" rows="10"></textarea>
+                    <small>Available variables: {blogContent}, {topic}, {keywords}</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="audiencePrompt">Target Audience Context:</label>
+                    <textarea id="audiencePrompt" rows="4"></textarea>
+                </div>
+                
+                <button id="save-prompts-btn">Save Prompts</button>
+                <button id="reset-prompts-btn" style="background: #6c757d;">Reset to Defaults</button>
+                
+                <div class="form-group">
+                    <label>Prompt Preview:</label>
+                    <div id="prompt-preview" class="prompt-preview">
+                        Your saved prompts will appear here...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generated Posts Tab -->
+        <div id="posts-tab" class="tab-content">
+            <div class="section">
+                <h2>Generated Instagram Captions</h2>
+                <p>Recent captions generated from your blog content</p>
+                <div id="posts-container">
+                    <div class="loading">Loading captions...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Tab -->
+        <div id="logs-tab" class="tab-content">
+            <div class="section">
+                <h2>Activity Logs</h2>
+                <button id="clear-logs-btn" style="background: #dc3545;">Clear Logs</button>
+                <div id="activity-logs" style="max-height: 500px; overflow-y: auto; margin-top: 20px;">
+                    <!-- Logs will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import ES6 Modules and Initialize App -->
+    <script type="module">
+        // ES6 MODULE ARCHITECTURE - DO NOT CONVERT TO INLINE JS
+        // Import all required modules
+        import { OAuthTokenManager } from '../modules/oauth-token-manager.js';
+        import { AIAPIManager } from '../modules/ai-api-manager.js';
+        import { UIComponents, injectUIStyles } from '../modules/shared-ui-components.js';
+        import { CredentialsManager, PostsManager } from '../modules/storage-credentials-manager.js';
+        import { AIPromptManager } from '../modules/ai-prompt-manager.js';
+        
+        // Display module loading status
+        document.getElementById('module-status').textContent = 'Modules loaded ✓';
+        
+        /**
+         * InstagramPostAgent - ES6 Modular Version
+         * Architecture: Modular ES6 with shared components
+         * Dependencies: See imports above
+         * 
+         * IMPORTANT: When modifying this file:
+         * - Maintain ES6 module imports
+         * - Use shared components for all functionality
+         * - Do not add inline event handlers
+         * - Do not duplicate code that exists in modules
+         */
+        class InstagramPostAgent {
+            constructor() {
+                // Initialize shared modules
+                this.ui = new UIComponents({
+                    logContainer: 'activity-logs',
+                    statusContainer: 'status'
+                });
+                
+                this.oauth = new OAuthTokenManager({
+                    storageKey: 'instagramAgent_google',
+                    scope: 'https://www.googleapis.com/auth/spreadsheets',
+                    onTokenRefresh: (token, expiry) => this.onTokenRefreshed(token, expiry),
+                    onTokenExpiry: (error) => this.onTokenExpired(error)
+                });
+                
+                this.ai = new AIAPIManager({
+                    storageKey: 'instagramAgent_ai'
+                });
+                
+                this.credentials = new CredentialsManager({
+                    namespace: 'instagramAgent'
+                });
+                
+                this.posts = new PostsManager({
+                    namespace: 'instagramAgent',
+                    maxPosts: 100
+                });
+                
+                this.prompts = new AIPromptManager({
+                    namespace: 'instagram',
+                    storageKey: 'instagramAgent_prompts'
+                });
+                
+                // Sheet data
+                this.sheetData = [];
+                
+                // Initialize UI
+                this.ui.initializeTabs();
+                this.setupEventListeners();
+                
+                // Load saved data
+                this.loadAllData();
+                
+                // Start monitoring
+                this.startMonitoring();
+                
+                this.ui.addLog('AgentPost Instagram Agent initialized', 'success');
+            }
+            
+            // Set up all event listeners
+            setupEventListeners() {
+                // Dashboard buttons
+                document.getElementById('check-posts-btn').addEventListener('click', () => this.checkNewPosts());
+                document.getElementById('generate-posts-btn').addEventListener('click', () => this.generatePosts());
+                document.getElementById('write-sheet-btn').addEventListener('click', () => this.writeToSheet());
+                document.getElementById('test-connections-btn').addEventListener('click', () => this.testConnections());
+                
+                // Credential buttons
+                document.getElementById('save-google-btn').addEventListener('click', () => this.saveGoogleCredentials());
+                document.getElementById('auth-google-btn').addEventListener('click', () => this.authenticateGoogle());
+                document.getElementById('save-ai-btn').addEventListener('click', () => this.saveAICredentials());
+                document.getElementById('save-content-btn').addEventListener('click', () => this.saveContentSettings());
+                
+                // Prompt buttons
+                document.getElementById('save-prompts-btn').addEventListener('click', () => this.savePrompts());
+                document.getElementById('reset-prompts-btn').addEventListener('click', () => this.resetPrompts());
+                
+                // Logs button
+                document.getElementById('clear-logs-btn').addEventListener('click', () => this.clearLogs());
+                
+                // AI provider change
+                document.getElementById('aiProvider').addEventListener('change', () => this.updateAIFields());
+                
+                // Prompt text area changes
+                ['systemPrompt', 'mainPrompt', 'audiencePrompt'].forEach(id => {
+                    document.getElementById(id).addEventListener('input', 
+                        this.ui.debounce(() => this.updatePromptPreview(), 300)
+                    );
+                });
+            }
+            
+            // Load all saved data
+            loadAllData() {
+                // Load OAuth data
+                this.oauth.loadFromStorage();
+                
+                // Load credentials
+                this.loadCredentialsToUI();
+                
+                // Update dashboard
+                this.updateDashboard();
+                
+                // Load posts
+                this.displayPosts();
+                
+                // Load prompts
+                this.loadPromptsToUI();
+            }
+            
+            // Load credentials to UI
+            loadCredentialsToUI() {
+                // Google credentials
+                const googleCreds = this.credentials.loadCredentials('google');
+                if (googleCreds.clientId) document.getElementById('clientId').value = googleCreds.clientId;
+                if (googleCreds.clientSecret) document.getElementById('clientSecret').value = googleCreds.clientSecret;
+                if (googleCreds.spreadsheetId) document.getElementById('spreadsheetId').value = googleCreds.spreadsheetId;
+                
+                // Content settings
+                const contentCreds = this.credentials.loadCredentials('content');
+                if (contentCreds.hashtags) document.getElementById('defaultHashtags').value = contentCreds.hashtags;
+                
+                // AI configuration
+                const aiConfig = this.ai.getStatus();
+                document.getElementById('aiProvider').value = aiConfig.provider;
+                if (this.ai.apiKey) document.getElementById('aiKey').value = this.ai.apiKey;
+                if (this.ai.proxyUrl) document.getElementById('proxyUrl').value = this.ai.proxyUrl;
+                
+                this.updateAIFields();
+            }
+            
+            // Load prompts to UI
+            loadPromptsToUI() {
+                const prompts = this.prompts.getPrompts('instagram');
+                document.getElementById('systemPrompt').value = prompts.system;
+                document.getElementById('mainPrompt').value = prompts.main;
+                document.getElementById('audiencePrompt').value = prompts.audience;
+                
+                // Force update prompt preview after loading
+                this.updatePromptPreview();
+            }
+            
+            // Update prompt preview
+            updatePromptPreview() {
+                const preview = this.prompts.generatePreview('instagram');
+                const previewText = `SYSTEM:\n${preview.system}\n\nMAIN PROMPT:\n${preview.main}\n\nAUDIENCE:\n${preview.audience}`;
+                document.getElementById('prompt-preview').textContent = previewText;
+            }
+            
+            // Save Google credentials
+            saveGoogleCredentials() {
+                const clientId = document.getElementById('clientId').value;
+                const clientSecret = document.getElementById('clientSecret').value;
+                const spreadsheetId = document.getElementById('spreadsheetId').value;
+                
+                this.oauth.updateCredentials(clientId, clientSecret);
+                this.credentials.saveCredentials('google', {
+                    clientId,
+                    clientSecret,
+                    spreadsheetId
+                });
+                
+                this.ui.showStatus('Google settings saved!', 'success');
+                this.ui.addLog('Google settings updated');
+                this.updateDashboard();
+            }
+            
+            // Save AI credentials
+            saveAICredentials() {
+                const config = {
+                    provider: document.getElementById('aiProvider').value,
+                    apiKey: document.getElementById('aiKey').value,
+                    proxyUrl: document.getElementById('proxyUrl').value
+                };
+                
+                this.ai.updateConfig(config);
+                this.ui.showStatus('AI configuration saved!', 'success');
+                this.ui.addLog('AI configuration updated');
+                this.updateDashboard();
+            }
+            
+            // Save content settings
+            saveContentSettings() {
+                const contentSettings = {
+                    hashtags: document.getElementById('defaultHashtags').value
+                };
+                
+                this.credentials.saveCredentials('content', contentSettings);
+                this.ui.showStatus('Content settings saved!', 'success');
+                this.ui.addLog('Content settings updated');
+            }
+            
+            // Save prompts
+            savePrompts() {
+                const prompts = {
+                    system: document.getElementById('systemPrompt').value,
+                    main: document.getElementById('mainPrompt').value,
+                    audience: document.getElementById('audiencePrompt').value
+                };
+                
+                this.prompts.setPrompts('instagram', prompts);
+                this.ui.showStatus('Prompts saved!', 'success');
+                this.ui.addLog('AI prompts updated');
+            }
+            
+            // Reset prompts
+            resetPrompts() {
+                this.prompts.resetToDefaults('instagram');
+                this.loadPromptsToUI();
+                this.ui.showStatus('Prompts reset to defaults', 'success');
+                this.ui.addLog('Prompts reset to defaults');
+            }
+            
+            // Authenticate with Google
+            authenticateGoogle() {
+                try {
+                    this.oauth.authenticate();
+                } catch (error) {
+                    this.ui.showStatus(error.message, 'error');
+                }
+            }
+            
+            // Update dashboard status
+            updateDashboard() {
+                // Google status
+                const googleStatus = this.oauth.getStatus();
+                this.ui.updateCredentialStatus(
+                    'google-status', 
+                    googleStatus.isAuthenticated,
+                    googleStatus.canAutoRefresh ? 'Connected (Auto-refresh)' : 'Connected',
+                    'Not Connected'
+                );
+                
+                // AI status
+                const aiStatus = this.ai.getStatus();
+                this.ui.updateCredentialStatus('ai-status', aiStatus.isConfigured, 'AI Configured');
+                
+                // Token expiry
+                if (googleStatus.expiryInfo) {
+                    this.ui.updateTokenExpiryDisplay('token-expiry', googleStatus.expiryInfo.timeLeft);
+                }
+                
+                // Update auth status text
+                const authStatus = document.getElementById('auth-status');
+                if (googleStatus.hasAccessToken && googleStatus.hasRefreshToken) {
+                    authStatus.innerHTML = '<span style="color: green;">✓ Connected with refresh token</span>';
+                } else if (googleStatus.hasAccessToken) {
+                    authStatus.innerHTML = '<span style="color: orange;">⚠ Connected (no refresh token)</span>';
+                } else {
+                    authStatus.innerHTML = '<span style="color: #666;">Not connected</span>';
+                }
+            }
+            
+            // Token callbacks
+            onTokenRefreshed(token, expiry) {
+                this.ui.addLog('Token refreshed successfully');
+                this.updateDashboard();
+            }
+            
+            onTokenExpired(error) {
+                this.ui.showStatus('Token expired. Please re-authenticate.', 'error');
+                this.ui.addLog('Token expired: ' + error.message, 'error');
+            }
+            
+            // Start monitoring
+            startMonitoring() {
+                // Check for OAuth callback
+                this.oauth.handleAuthCallback().then(success => {
+                    if (success) {
+                        this.ui.showStatus('Successfully connected to Google!', 'success');
+                        this.updateDashboard();
+                    }
+                });
+                
+                // Update dashboard periodically
+                setInterval(() => this.updateDashboard(), 60000);
+            }
+            
+            // Update AI fields visibility
+            updateAIFields() {
+                const provider = document.getElementById('aiProvider').value;
+                this.ui.toggleFormField('claudeProxyGroup', provider === 'claude');
+            }
+            
+            // Check for new posts
+            async checkNewPosts() {
+                try {
+                    const googleCreds = this.credentials.loadCredentials('google');
+                    if (!this.oauth.accessToken || !googleCreds.spreadsheetId) {
+                        this.ui.showStatus('Please connect to Google Sheets first', 'error');
+                        return;
+                    }
+                    
+                    this.ui.showStatus('Checking for new content...', 'info');
+                    
+                    // Determine which tab to read from
+                    const source = document.querySelector('input[name="contentSource"]:checked').value;
+                    const range = source === 'blog' ? 'Blog!A:I' : 'Ideas!A:D';
+                    
+                    this.ui.addLog(`Checking ${source === 'blog' ? 'Blog' : 'Ideas'} tab for new content`);
+                    
+                    const url = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}/values/${range}`;
+                    
+                    const response = await this.oauth.makeAuthenticatedRequest(url);
+                    const data = await response.json();
+                    
+                    if (response.ok && data.values) {
+                        this.sheetData = [];
+                        
+                        if (source === 'blog') {
+                            // Process Blog tab structure:
+                            // A: Topic, B: Keywords, C: Title, D: Meta Description, 
+                            // E: Featured Image, F: URL, G: Generated Content, H: Image URL, I: Status (9th column)
+                            for (let i = 1; i < data.values.length; i++) {
+                                const row = data.values[i];
+                                if (row[0] && row[6]) { // Has topic and generated content
+                                    this.sheetData.push({
+                                        topic: row[0],
+                                        keywords: row[1] || '',
+                                        generatedContent: row[6], // Generated Content column
+                                        status: row[8] || '', // Status column I (9th column)
+                                        processed: row[8] === 'Processed', // Check if Status is "Processed"
+                                        rowIndex: i + 1 // Store row index for updates
+                                    });
+                                }
+                            }
+                        } else {
+                            // Process Ideas tab
+                            for (let i = 1; i < data.values.length; i++) {
+                                const row = data.values[i];
+                                if (row[0]) {
+                                    this.sheetData.push({
+                                        topic: row[0],
+                                        keywords: row[1] || '',
+                                        topicDescription: row[2] || '',
+                                        status: row[3] || '',
+                                        processed: row[3] === 'Processed',
+                                        rowIndex: i + 1
+                                    });
+                                }
+                            }
+                        }
+                        
+                        const pendingCount = this.sheetData.filter(item => !item.processed).length;
+                        this.ui.showStatus(`Found ${pendingCount} items to process from ${source === 'blog' ? 'Blog' : 'Ideas'} tab!`, 'success');
+                        this.ui.addLog(`Found ${pendingCount} items from ${source} tab`);
+                        
+                        // Display results
+                        const resultsDiv = document.getElementById('results');
+                        if (pendingCount > 0) {
+                            resultsDiv.innerHTML = `
+                                <div class="section" style="margin-top: 20px;">
+                                    <h4>Items to Generate Captions For:</h4>
+                                    ${this.sheetData.filter(item => !item.processed)
+                                        .map(item => `<div>• ${item.topic}</div>`).join('')}
+                                </div>
+                            `;
+                        } else {
+                            resultsDiv.innerHTML = '<div class="section" style="margin-top: 20px;">All items have been processed!</div>';
+                        }
+                    } else {
+                        throw new Error(data.error?.message || 'Failed to fetch sheet');
+                    }
+                } catch (error) {
+                    this.ui.showStatus('Error: ' + error.message, 'error');
+                    this.ui.addLog('Error checking content: ' + error.message, 'error');
+                }
+            }
+            
+            // Generate posts
+            async generatePosts() {
+                try {
+                    if (this.sheetData.length === 0) {
+                        await this.checkNewPosts();
+                    }
+                    
+                    const pending = this.sheetData.filter(item => !item.processed);
+                    if (pending.length === 0) {
+                        this.ui.showStatus('No pending items to generate captions for', 'info');
+                        return;
+                    }
+                    
+                    this.ui.showStatus(`Generating ${pending.length} Instagram captions...`, 'info');
+                    const progressBar = this.ui.createProgressBar('results', pending.length);
+                    
+                    let generated = 0;
+                    const processedRows = []; // Track which rows we processed
+                    
+                    for (const post of pending) {
+                        try {
+                            this.ui.addLog(`Generating caption for: ${post.topic}`);
+                            const instagramPost = await this.generateInstagramContent(post);
+                            
+                            // Save generated post
+                            const savedPost = {
+                                ...instagramPost,
+                                platform: 'instagram',
+                                status: 'draft'
+                            };
+                            this.posts.savePost(savedPost);
+                            
+                            generated++;
+                            progressBar.update(generated);
+                            processedRows.push(post.rowIndex);
+                            this.ui.addLog(`Generated caption for: ${post.topic}`, 'success');
+                        } catch (error) {
+                            this.ui.addLog(`Failed: ${post.topic} - ${error.message}`, 'error');
+                        }
+                    }
+                    
+                    progressBar.remove();
+                    this.ui.showStatus(`Generation complete! Generated ${generated} captions.`, 'success');
+                    this.displayPosts();
+                    
+                    // Update the sheet to mark as processed
+                    if (processedRows.length > 0) {
+                        await this.updateProcessedStatus(processedRows);
+                    }
+                    
+                } catch (error) {
+                    this.ui.showStatus('Error: ' + error.message, 'error');
+                }
+            }
+            
+            // Generate Instagram content with AI
+            async generateInstagramContent(post) {
+                const prompts = this.prompts.getPrompts('instagram');
+                
+                // Prepare the prompt with blog content or topic
+                const blogContent = post.generatedContent || `Topic: ${post.topic}\nKeywords: ${post.keywords}`;
+                const processedPrompt = this.prompts.processTemplate(prompts.main, {
+                    blogContent: blogContent,
+                    topic: post.topic,
+                    keywords: post.keywords || 'N/A'
+                });
+                
+                // Add audience context
+                const fullPrompt = `${processedPrompt}\n\nTarget Audience Context:\n${prompts.audience}`;
+                
+                // Generate content
+                const response = await this.ai.generateContent(prompts.system, fullPrompt, {
+                    maxTokens: 1000,
+                    temperature: 0.8
+                });
+                
+                // Parse the structured response
+                const parsed = this.ai.parseStructuredResponse(response.content, 
+                    ['CAPTION', 'HASHTAGS', 'CTA']
+                );
+                
+                // Add default hashtags if needed
+                const contentCreds = this.credentials.loadCredentials('content');
+                const defaultTags = contentCreds.hashtags || '#instagram #socialmedia';
+                let hashtags = parsed.HASHTAGS || '';
+                if (defaultTags && !hashtags.includes(defaultTags)) {
+                    hashtags = `${hashtags} ${defaultTags}`.trim();
+                }
+                
+                // Generate image suggestions with Unsplash links
+                const imageSuggestions = this.generateImageSuggestionsWithLinks(post, parsed.CAPTION);
+                
+                return {
+                    originalTopic: post.topic,
+                    caption: parsed.CAPTION || '',
+                    hashtags: hashtags,
+                    cta: parsed.CTA || '',
+                    imageSuggestions: imageSuggestions,
+                    keywords: post.keywords,
+                    source: post.generatedContent ? 'blog' : 'ideas',
+                    rowIndex: post.rowIndex,
+                    generatedBy: this.ai.provider,
+                    model: response.model
+                };
+            }
+            
+            // Generate image suggestions with direct Unsplash links
+            generateImageSuggestionsWithLinks(post, caption) {
+                const combined = (post.topic + ' ' + (caption || '')).toLowerCase();
+                
+                // Determine image type
+                let imageType = 'Eye-catching visuals that evoke the emotion of the content';
+                if (combined.includes('tech') || combined.includes('digital') || combined.includes('ai')) {
+                    imageType = 'Modern tech graphics, futuristic visuals, or minimalist digital art';
+                } else if (combined.includes('business') || combined.includes('entrepreneur')) {
+                    imageType = 'Professional workspace, success imagery, or modern office aesthetics';
+                } else if (combined.includes('growth') || combined.includes('success')) {
+                    imageType = 'Upward trends, plant growth metaphors, or achievement visuals';
+                } else if (combined.includes('tips') || combined.includes('guide')) {
+                    imageType = 'Infographic style, numbered lists, or educational visuals';
+                }
+                
+                // Generate 1-2 relevant search terms
+                const searchTerms = this.generateSearchTerms(post, caption || '');
+                
+                // Create direct Unsplash search links
+                const unsplashLinks = searchTerms.map(term => ({
+                    term: term,
+                    url: `https://unsplash.com/s/photos/${encodeURIComponent(term)}`
+                }));
+                
+                return {
+                    type: imageType,
+                    style: 'Bright, eye-catching, Instagram-friendly',
+                    dimensions: '1080x1080px (square) or 1080x1350px (4:5 portrait)',
+                    searchTerms: searchTerms,
+                    unsplashLinks: unsplashLinks || [],
+                    additionalSources: [
+                        {
+                            name: 'Pexels',
+                            url: `https://www.pexels.com/search/${encodeURIComponent(post.topic)}/`
+                        },
+                        {
+                            name: 'Pixabay',
+                            url: `https://pixabay.com/images/search/${encodeURIComponent(post.topic)}/`
+                        }
+                    ]
+                };
+            }
+            
+            // Generate smart search terms for images
+            generateSearchTerms(post, caption) {
+                const terms = [];
+                
+                if (!post || !post.topic) {
+                    return ['inspirational'];
+                }
+                
+                const topic = post.topic.toLowerCase();
+                const keywords = post.keywords ? post.keywords.toLowerCase().split(',').map(k => k.trim()).filter(k => k) : [];
+                
+                // Primary term based on topic
+                terms.push(post.topic);
+                
+                // Secondary term based on content analysis
+                if (topic.includes('business') || topic.includes('entrepreneur')) {
+                    terms.push('modern business workspace');
+                } else if (topic.includes('tech') || topic.includes('digital')) {
+                    terms.push('technology innovation');
+                } else if (topic.includes('growth') || topic.includes('success')) {
+                    terms.push('success achievement');
+                } else if (topic.includes('tips') || topic.includes('guide')) {
+                    terms.push('educational infographic');
+                } else if (keywords.length > 0) {
+                    // Use the most relevant keyword
+                    terms.push(keywords[0]);
+                } else {
+                    // Generic inspirational term
+                    terms.push('inspirational quotes');
+                }
+                
+                // Return only the top 2 most relevant terms
+                return terms.slice(0, 2);
+            }
+            
+            // Update processed status in sheet
+            async updateProcessedStatus(processedRows) {
+                try {
+                    const googleCreds = this.credentials.loadCredentials('google');
+                    const source = document.querySelector('input[name="contentSource"]:checked').value;
+                    
+                    if (source === 'blog') {
+                        // Update Status column (I) in Blog tab
+                        const updates = processedRows.map(rowIndex => ({
+                            range: `Blog!I${rowIndex}`,
+                            values: [['Processed']]
+                        }));
+                        
+                        const batchUrl = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}/values:batchUpdate`;
+                        
+                        const response = await this.oauth.makeAuthenticatedRequest(batchUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                valueInputOption: 'RAW',
+                                data: updates
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            this.ui.addLog(`Updated ${updates.length} rows as Processed in Blog sheet`);
+                        }
+                    } else {
+                        // Update Status column (D) in Ideas tab
+                        const updates = processedRows.map(rowIndex => ({
+                            range: `Ideas!D${rowIndex}`,
+                            values: [['Processed']]
+                        }));
+                        
+                        const batchUrl = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}/values:batchUpdate`;
+                        
+                        const response = await this.oauth.makeAuthenticatedRequest(batchUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                valueInputOption: 'RAW',
+                                data: updates
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            this.ui.addLog(`Updated ${updates.length} rows as Processed in Ideas sheet`);
+                        }
+                    }
+                } catch (error) {
+                    this.ui.addLog('Error updating processed status: ' + error.message, 'error');
+                }
+            }
+            
+            // Write to sheet - FIXED to append instead of overwrite
+            async writeToSheet() {
+                try {
+                    const googleCreds = this.credentials.loadCredentials('google');
+                    if (!this.oauth.accessToken || !googleCreds.spreadsheetId) {
+                        this.ui.showStatus('Please connect to Google Sheets first', 'error');
+                        return;
+                    }
+                    
+                    const allPosts = this.posts.getAllPosts();
+                    const instagramPosts = allPosts.filter(p => p.platform === 'instagram');
+                    
+                    if (instagramPosts.length === 0) {
+                        this.ui.showStatus('No captions to write. Generate captions first!', 'error');
+                        return;
+                    }
+                    
+                    this.ui.showStatus('Writing captions to Instagram tab...', 'info');
+                    
+                    // First, check if Instagram sheet exists
+                    const sheetCheckUrl = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}`;
+                    
+                    const checkResponse = await this.oauth.makeAuthenticatedRequest(sheetCheckUrl);
+                    
+                    if (!checkResponse.ok) {
+                        throw new Error('Failed to access spreadsheet');
+                    }
+                    
+                    const spreadsheetData = await checkResponse.json();
+                    const instagramSheet = spreadsheetData.sheets.find(sheet => 
+                        sheet.properties.title.toLowerCase() === 'instagram'
+                    );
+                    
+                    if (!instagramSheet) {
+                        // Create Instagram sheet with headers
+                        await this.createInstagramSheet(googleCreds.spreadsheetId);
+                    }
+                    
+                    // Check for existing data to determine where to append
+                    const existingDataUrl = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}/values/Instagram!A:A`;
+                    const existingResponse = await this.oauth.makeAuthenticatedRequest(existingDataUrl);
+                    
+                    let startRow = 2; // Default to row 2 (after headers)
+                    let needHeaders = true;
+                    
+                    if (existingResponse.ok) {
+                        const existingData = await existingResponse.json();
+                        if (existingData.values && existingData.values.length > 0) {
+                            startRow = existingData.values.length + 1; // Append after last row
+                            needHeaders = false; // Headers already exist
+                        }
+                    }
+                    
+                    // Prepare data rows (no headers if they already exist)
+                    const timestamp = Date.now();
+                    const rows = instagramPosts.map((post, index) => {
+                        const postId = `IG_${timestamp}_${index}`;
+                        
+                        // Safely access Unsplash links
+                        let imageUrl = '';
+                        let imageUrl2 = '';
+                        
+                        if (post.imageSuggestions && post.imageSuggestions.unsplashLinks && Array.isArray(post.imageSuggestions.unsplashLinks)) {
+                            imageUrl = post.imageSuggestions.unsplashLinks[0]?.url || '';
+                            imageUrl2 = post.imageSuggestions.unsplashLinks[1]?.url || '';
+                        }
+                        
+                        return [
+                            postId,
+                            post.originalTopic || post.topic || '',
+                            post.caption || '',
+                            post.hashtags || '',
+                            imageUrl,
+                            post.imageSuggestions?.type || '',
+                            imageUrl2, // Second image URL in Link column
+                            '',
+                            'instagram',
+                            'draft',
+                            new Date(post.timestamp).toISOString(),
+                            post.source || 'manual'
+                        ];
+                    });
+                    
+                    // If sheet is new, add headers
+                    if (needHeaders) {
+                        const headers = [['Post ID', 'Title', 'Caption', 'Hashtags', 'Image URL', 'Image Alt Text', 'Link', 'Schedule Date', 'Platforms', 'Status', 'Created Date', 'Source']];
+                        
+                        // Write headers
+                        const headerUrl = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}/values/Instagram!A1:L1?valueInputOption=RAW`;
+                        await this.oauth.makeAuthenticatedRequest(headerUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                values: headers
+                            })
+                        });
+                    }
+                    
+                    // Append data rows
+                    const appendUrl = `https://sheets.googleapis.com/v4/spreadsheets/${googleCreds.spreadsheetId}/values/Instagram!A${startRow}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+                    
+                    const response = await this.oauth.makeAuthenticatedRequest(appendUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            values: rows
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        this.ui.showStatus(`Successfully added ${rows.length} captions to Instagram tab!`, 'success');
+                        this.ui.addLog(`Added ${rows.length} captions to Instagram sheet`);
+                        
+                        // Clear local posts after successful write
+                        localStorage.removeItem('instagramAgent_generated_posts');
+                        this.posts.clearAllPosts();
+                        this.displayPosts();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.error?.message || 'Failed to write to sheet');
+                    }
+                    
+                } catch (error) {
+                    this.ui.showStatus('Error: ' + error.message, 'error');
+                    this.ui.addLog('Error writing to sheet: ' + error.message, 'error');
+                }
+            }
+            
+            // Create Instagram sheet if it doesn't exist
+            async createInstagramSheet(spreadsheetId) {
+                const createSheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`;
+                
+                const response = await this.oauth.makeAuthenticatedRequest(createSheetUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        requests: [{
+                            addSheet: {
+                                properties: {
+                                    title: 'Instagram',
+                                    gridProperties: {
+                                        rowCount: 1000,
+                                        columnCount: 12
+                                    }
+                                }
+                            }
+                        }]
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to create Instagram sheet');
+                }
+                
+                this.ui.addLog('Created Instagram sheet');
+            }
+            
+            // Test connections
+            async testConnections() {
+                this.ui.showStatus('Testing connections...', 'info');
+                
+                // Test Google
+                if (this.oauth.getStatus().isAuthenticated) {
+                    this.ui.addLog('✅ Google Sheets connected');
+                } else {
+                    this.ui.addLog('❌ Google Sheets not connected');
+                }
+                
+                // Test AI
+                if (this.ai.getStatus().isConfigured) {
+                    const test = await this.ai.testConnection();
+                    if (test.success) {
+                        this.ui.addLog(`✅ AI API connected (${test.provider})`);
+                    } else {
+                        this.ui.addLog('❌ AI API error: ' + test.error);
+                    }
+                } else {
+                    this.ui.addLog('❌ AI not configured');
+                }
+                
+                this.ui.showStatus('Connection tests complete', 'info');
+            }
+            
+            // Display posts
+            displayPosts() {
+                const allPosts = this.posts.getAllPosts();
+                const instagramPosts = allPosts.filter(p => p.platform === 'instagram');
+                const container = document.getElementById('posts-container');
+                
+                if (instagramPosts.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">No captions generated yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = instagramPosts.map(post => `
+                    <div class="post-item">
+                        <h3>${post.originalTopic || post.topic || 'Untitled'}</h3>
+                        <div class="post-meta">
+                            Generated: ${new Date(post.timestamp).toLocaleString()} | 
+                            Model: ${post.model || 'Unknown'} |
+                            Source: ${post.source || 'Unknown'}
+                        </div>
+                        <div class="caption-preview">${post.caption || 'No caption'}</div>
+                        <div class="hashtags">${post.hashtags || 'No hashtags'}</div>
+                        ${post.imageSuggestions ? `
+                            <div class="image-suggestions">
+                                <strong>Image Type:</strong> ${post.imageSuggestions.type || 'General'}
+                                <div class="image-links">
+                                    ${post.imageSuggestions.unsplashLinks && Array.isArray(post.imageSuggestions.unsplashLinks) ? 
+                                        post.imageSuggestions.unsplashLinks.map((link, idx) => 
+                                            `<a href="${link.url}" target="_blank" class="image-link">
+                                                Unsplash: ${link.term}
+                                            </a>`
+                                        ).join('') : ''}
+                                    ${post.imageSuggestions.additionalSources && Array.isArray(post.imageSuggestions.additionalSources) ? 
+                                        post.imageSuggestions.additionalSources.map(source => 
+                                            `<a href="${source.url}" target="_blank" class="image-link" style="background: #6c757d;">
+                                                ${source.name}
+                                            </a>`
+                                        ).join('') : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                        <div class="post-actions">
+                            <button onclick="window.instagramAgent.viewPost('${post.id}')">View</button>
+                            <button onclick="window.instagramAgent.copyPost('${post.id}')" style="background: #6c757d;">Copy</button>
+                            <button onclick="window.instagramAgent.deletePost('${post.id}')" style="background: #dc3545;">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // View post
+            viewPost(postId) {
+                const post = this.posts.getAllPosts().find(p => p.id === postId);
+                
+                if (post) {
+                    this.ui.showModal(post.originalTopic || post.topic || 'Caption', `
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <h4>Caption:</h4>
+                            <div class="caption-preview">${post.caption || 'No caption'}</div>
+                            
+                            <h4>Hashtags:</h4>
+                            <div class="hashtags">${post.hashtags || 'No hashtags'}</div>
+                            
+                            ${post.cta ? `<h4>Call to Action:</h4><div>${post.cta}</div>` : ''}
+                            
+                            ${post.imageSuggestions ? `
+                                <h4>Image Suggestions:</h4>
+                                <div class="image-suggestions">
+                                    <p><strong>Type:</strong> ${post.imageSuggestions.type || 'General'}</p>
+                                    <p><strong>Style:</strong> ${post.imageSuggestions.style || 'Instagram-friendly'}</p>
+                                    <p><strong>Direct Image Links:</strong></p>
+                                    <div class="image-links">
+                                        ${post.imageSuggestions.unsplashLinks && Array.isArray(post.imageSuggestions.unsplashLinks) ? 
+                                            post.imageSuggestions.unsplashLinks.map((link, idx) => 
+                                                `<a href="${link.url}" target="_blank" class="image-link">
+                                                    Unsplash: ${link.term}
+                                                </a>`
+                                            ).join('') : '<p>No Unsplash links available</p>'}
+                                        ${post.imageSuggestions.additionalSources && Array.isArray(post.imageSuggestions.additionalSources) ? 
+                                            post.imageSuggestions.additionalSources.map(source => 
+                                                `<a href="${source.url}" target="_blank" class="image-link" style="background: #6c757d;">
+                                                    ${source.name}: ${post.topic}
+                                                </a>`
+                                            ).join('') : ''}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `, [
+                        {
+                            text: 'Copy Caption',
+                            onClick: () => this.copyPost(postId)
+                        },
+                        {
+                            text: 'Close'
+                        }
+                    ]);
+                }
+            }
+            
+            // Copy post
+            copyPost(postId) {
+                const post = this.posts.getAllPosts().find(p => p.id === postId);
+                if (post) {
+                    const fullCaption = `${post.caption}\n\n${post.hashtags}`;
+                    this.ui.copyToClipboard(fullCaption, 'Caption copied!');
+                }
+            }
+            
+            // Delete post
+            async deletePost(postId) {
+                if (await this.ui.confirm('Are you sure you want to delete this caption?')) {
+                    if (this.posts.deletePost(postId)) {
+                        this.ui.showStatus('Caption deleted', 'success');
+                        this.displayPosts();
+                    }
+                }
+            }
+            
+            // Clear logs
+            clearLogs() {
+                if (confirm('Clear all logs?')) {
+                    this.ui.clearLogs();
+                }
+            }
+        }
+        
+        // Initialize the app and make it globally accessible
+        const instagramAgent = new InstagramPostAgent();
+        window.instagramAgent = instagramAgent; // Make available for onclick handlers
+        
+        // Log successful initialization
+        console.log('AgentPost Instagram Agent initialized successfully');
+    </script>
+</body>
+</html>
