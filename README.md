@@ -1,10 +1,10 @@
-# AgentPost - AI-Powered Content Automation Suite
+# PostAssist - AI-Powered Content Automation Suite
 
-AgentPost is a modular, AI-powered content automation system that transforms ideas into blog posts and social media content. Built with a modern ES6 architecture, it features two main applications sharing common components for maximum efficiency and maintainability.
+PostAssist is a modular, AI-powered content automation system that transforms ideas into blog posts and social media content. Built with a modern ES6 architecture, it features two main applications sharing common components for maximum efficiency and maintainability.
 
 ## 🚀 Overview
 
-AgentPost consists of two powerful agents working together:
+PostAssist consists of two powerful agents working together:
 
 1. **Blog Agent** - Transforms topics into fully-formatted, SEO-optimized blog posts
 2. **Instagram Agent** - Converts blog content into engaging Instagram captions with hashtags and image suggestions
@@ -40,7 +40,7 @@ agent-post/
 
 ## 📋 Prerequisites
 
-Before setting up AgentPost, ensure you have:
+Before setting up PostAssist, ensure you have:
 
 1. **Web Server** or **Local Development Environment**
    - Any HTTP server (e.g., Python's `http.server`, Node.js `http-server`, or VS Code Live Server)
@@ -103,7 +103,7 @@ http-server -p 8000
 
 2. **Create a New Project** (or select existing)
    - Click "Select a project" → "New Project"
-   - Name it (e.g., "AgentPost")
+   - Name it (e.g., "PostAssist")
    - Click "Create"
 
 3. **Enable Google Sheets API**
@@ -119,7 +119,7 @@ http-server -p 8000
      - Fill in required fields (app name, email)
      - Add your email to test users
    - For Application type, select "Web application"
-   - Name it (e.g., "AgentPost Web Client")
+   - Name it (e.g., "PostAssist Web Client")
    - Add Authorized JavaScript origins:
      ```
      http://localhost:8000
@@ -198,7 +198,7 @@ http-server -p 8000
 
 ### Step 6: Initial Setup - Blog Agent
 
-1. **Open AgentPost in your browser**
+1. **Open PostAssist in your browser**
    ```
    http://localhost:8000
    ```
